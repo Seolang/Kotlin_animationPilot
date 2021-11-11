@@ -18,6 +18,7 @@ import com.example.animationpilot.enum.MyImages
 
 @Composable
 fun Dissolve() {
+    // State of which image loaded
     var state by rememberSaveable { mutableStateOf(MyImages.Android) }
 
     Column(
@@ -25,6 +26,7 @@ fun Dissolve() {
         horizontalAlignment = Alignment.CenterHorizontally,
 
         ) {
+        // Make buttons
         Row {
             MyImages.values().forEach { myImages ->
                 Button(
@@ -38,6 +40,7 @@ fun Dissolve() {
                 }
             }
         }
+        // Crossfade print images with dissolve effect
         Crossfade(targetState = state, animationSpec = tween(3000)) { selectedImage ->
             Box(
 
@@ -66,7 +69,7 @@ fun Fade() {
 
         ) {
 
-        Button(
+        Button( // If clicked, change image state
             onClick = {
                 if (state == MyImages.Android.image)
                     state = MyImages.Apple.image
@@ -74,13 +77,14 @@ fun Fade() {
                     state = MyImages.Android.image
             }
         ) {
-            AnimatedContent(
+            AnimatedContent( // If state changed, start animation of Current state, then start Initial state
+                            // But by giving delays, you can run Initial state animation first.
                 targetState = state,
                 transitionSpec = {
                     fadeIn(animationSpec = tween(1000, 1000)) with
                             fadeOut(animationSpec = tween(1000))
                 }
-            ) { curState ->
+            ) { curState -> // Images which animation is running
                 Image(
                     painter = painterResource(id = curState),
                     contentDescription = "",
@@ -98,6 +102,7 @@ fun Fade() {
 fun Shake() {
     var isShake by rememberSaveable { mutableStateOf(false) }
     val alpha by animateDpAsState(
+        // if button clicked, isShake's state is changed so target .dp also changed
         targetValue = if (isShake) 12.dp else 0.dp,
         animationSpec = keyframes {
             durationMillis = 100
@@ -106,6 +111,8 @@ fun Shake() {
             (-12).dp.at(durationMillis*3/4)
             (12).dp.at(durationMillis)
         }
+    // after finish half of animation( which means dp changed 0 to 12 )
+    // change isShake state to default so animation start again from 12 to 0
     ) { run { if(isShake) isShake = false } }
 
     Column(
@@ -115,6 +122,7 @@ fun Shake() {
         ) {
 
         Button(
+            // Click image change state
             onClick = { if(!isShake) isShake = true },
         ) {
             Image(
