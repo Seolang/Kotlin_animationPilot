@@ -84,8 +84,8 @@ fun Fade() {
                             // But by giving delays, you can run Initial state animation first.
                 targetState = state,
                 transitionSpec = {
-                    fadeIn(animationSpec = tween(1000, 1000)) with
-                            fadeOut(animationSpec = tween(1000))
+                    fadeIn(animationSpec = tween(3000, 0)) with
+                            fadeOut(animationSpec = tween(3000))
                 }
             ) { curState -> // Images which animation is running
                 Image(
@@ -96,46 +96,6 @@ fun Fade() {
                         .padding(top = 10.dp)
                 )
             }
-        }
-    }
-}
-
-@ExperimentalAnimationApi
-@Composable
-fun Shake() {
-    val repTime = 4
-    var isShake by rememberSaveable { mutableStateOf(false) }
-    val alpha by animateDpAsState(
-        // if button clicked, isShake's state is changed so target .dp also changed
-        targetValue = if (isShake) 12.dp else 0.dp,
-        animationSpec = keyframes {
-            durationMillis = 100
-            for(item in 1..repTime/2) {
-                (-12).dp.at(durationMillis*(2*item-1) / repTime)
-                (12).dp.at(durationMillis*(2*item) / repTime)
-            }
-        }
-    // after finish half of animation( which means dp changed 0 to 12 )
-    // change isShake state to default so animation start again from 12 to 0
-    ) { if(isShake) isShake = false }
-
-    Column(
-        modifier = Modifier.padding(10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-
-        ) {
-
-        Button(
-            // Click image change state
-            onClick = { if(!isShake) isShake = true },
-        ) {
-            Image(
-                painter = painterResource(id = MyImages.Android.image),
-                contentDescription = MyImages.Android.name,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .offset(x = alpha)
-            )
         }
     }
 }
@@ -157,23 +117,20 @@ fun ShakePosition(trigger: Boolean, moveWidth: Dp, durationTime: Int, repeat: In
         },
         finishedListener
     )
-
     return alpha
 }
 
 @ExperimentalAnimationApi
 @Composable
-fun Shake1() {
+fun Shake() {
     var isShake by remember { mutableStateOf(false) }
-    val cxt = LocalContext.current
     val alpha by ShakePosition(
         trigger = isShake,
         moveWidth = 12.dp,
-        durationTime = 1000,
-        repeat = 4
+        durationTime = 300,
+        repeat = 5
     ) {
         isShake = false
-        Toast.makeText(cxt, "핸들러가 작동했습니다.", Toast.LENGTH_SHORT).show()
     }
 
     Column(
@@ -186,7 +143,6 @@ fun Shake1() {
         Button(
             // Click image change state
             onClick = {
-                //Toast.makeText(cxt, "지금 isShake 는 $isShake 입니다.", Toast.LENGTH_SHORT).show()
                 if(!isShake) isShake = true
                       },
         ) {
@@ -195,7 +151,7 @@ fun Shake1() {
                 contentDescription = MyImages.Android.name,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .offset(x = if (isShake) alpha else 0.dp)
+                    .offset(x = alpha)
             )
         }
     }

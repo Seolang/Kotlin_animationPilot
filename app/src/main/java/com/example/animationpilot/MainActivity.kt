@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
                     Column {
                         Dissolve()
                         Fade()
-                        Shake1()
+                        Shake()
                     }
                 }
             }
